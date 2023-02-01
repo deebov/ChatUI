@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface CarouselItemProps {
-  width: string;
+  width: string | number;
   children?: React.ReactNode;
 }
 

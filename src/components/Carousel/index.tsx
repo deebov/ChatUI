@@ -4,6 +4,9 @@ import { CarouselItem } from './Item';
 import { setTransform, setTransition } from '../../utils/style';
 import canUse from '../../utils/canUse';
 
+// Item width in pixels
+const DEFAULT_ITEM_WIDTH = 312;
+
 export interface CarouselProps {
   children: React.ReactNode;
   className?: string;
@@ -17,6 +20,7 @@ export interface CarouselProps {
   rtl?: boolean;
   autoPlay?: boolean;
   interval?: number;
+  itemWidth?: number;
   // pauseOnHover?: boolean;
   dots?: boolean;
   onChange?: (activeIndex?: number) => void;
@@ -65,10 +69,10 @@ export const Carousel = React.forwardRef<CarouselHandle, CarouselProps>((props, 
     dots = props.indicators || true,
     onChange,
     children,
+    itemWidth = DEFAULT_ITEM_WIDTH
   } = props;
 
   const count = React.Children.count(children);
-  const itemWith = `${100 / count}%`;
 
   const wrapperRef = useRef<HTMLDivElement>(null!);
   const innerRef = useRef<HTMLDivElement>(null!);
@@ -366,7 +370,7 @@ export const Carousel = React.forwardRef<CarouselHandle, CarouselProps>((props, 
   useEffect(() => {
     // should use ResizeObserver
     function handleResize() {
-      stateRef.current.wrapWidth = wrapperRef.current.offsetWidth;
+      stateRef.current.wrapWidth = itemWidth;
       slideTo(activeIndex);
     }
 
@@ -378,7 +382,7 @@ export const Carousel = React.forwardRef<CarouselHandle, CarouselProps>((props, 
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [activeIndex, slideTo]);
+  }, [activeIndex, slideTo, itemWidth]);
 
   useEffect(() => {
     if (onChange && !stateRef.current.first) {
@@ -446,17 +450,17 @@ export const Carousel = React.forwardRef<CarouselHandle, CarouselProps>((props, 
         ref={innerRef}
       >
         {loop && (
-          <CarouselItem width={itemWith}>
+          <CarouselItem width={itemWidth}>
             {React.Children.toArray(children)[count - 1]}
           </CarouselItem>
         )}
         {React.Children.map(children, (item, i) => (
-          <CarouselItem width={itemWith} key={i}>
+          <CarouselItem width={itemWidth} key={i}>
             {item}
           </CarouselItem>
         ))}
         {loop && (
-          <CarouselItem width={itemWith}>{React.Children.toArray(children)[0]}</CarouselItem>
+          <CarouselItem width={itemWidth}>{React.Children.toArray(children)[0]}</CarouselItem>
         )}
       </div>
       {dots && (

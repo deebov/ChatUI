@@ -20,6 +20,11 @@
       pointer-events: none;
     }
   }
+
+  &-item:not(:last-child) {
+    padding-right: @carousel-inner-gap;
+  }
+
   &-inner {
     display: flex;
     will-change: transform;
